@@ -1,10 +1,10 @@
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import z from "zod";
 import { urlRoute } from "./routes/url.js";
 import { getLongUrlFromShort } from "./lib/db.js";
 import { Cacher } from "./lib/cache.js";
+import { slugSchema } from "./lib/slug.js";
 
 const corsOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:5173")
   .split(",")
@@ -36,7 +36,7 @@ app.route("/api/url", urlRoute);
 app.get("/:shortSlug", async (c, next) => {
   const rawShortSlug = c.req.param("shortSlug");
 
-  const parseShortSlug = z.string().length(7).safeParse(rawShortSlug);
+  const parseShortSlug = slugSchema.safeParse(rawShortSlug);
   if (!parseShortSlug.success) {
     await next();
     return;
