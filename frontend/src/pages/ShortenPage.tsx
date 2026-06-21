@@ -33,6 +33,14 @@ export function ShortenPage() {
       return;
     }
 
+    if (
+      URL.canParse(longUrl) &&
+      new URL(longUrl).host === window.location.host
+    ) {
+      toast.error("Can't shorten links to this site");
+      return;
+    }
+
     setLoading(true);
     setResult(null);
     try {

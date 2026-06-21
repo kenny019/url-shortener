@@ -8,10 +8,18 @@ export const urlRoute = new Hono();
 
 const MAX_RETRIES = 5;
 
+const BLOCKED_HOSTS = (process.env.BLOCKED_HOSTS ?? "")
+  .split(",")
+  .map((h) => h.trim().toLowerCase())
+  .filter(Boolean);
+
 const longUrlSchema = z
   .url()
   .refine((u) => ["http:", "https:"].includes(new URL(u).protocol), {
     message: "only http(s) URLs allowed",
+  })
+  .refine((u) => !BLOCKED_HOSTS.includes(new URL(u).host.toLowerCase()), {
+    message: "cannot shorten links to this domain",
   });
 
 urlRoute.post("/", async (c) => {
