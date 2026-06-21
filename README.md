@@ -18,6 +18,7 @@ questions:
 - scalablility to 1k+ rps or more
 - how to store urls? might be a ton like over 1B
 - what other future features is needed? bit.ly has link tracking, custom landing pages
+- i noticed in the example it calls for a specific short link. assuming that this specific feature is core https://open.gov.sg/ -> /open
 
 routes:
 POST `/api/url/` -> creates a new short url
