@@ -10,4 +10,10 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  build: {
+    // Single-origin deploy: the backend serves this build from ./public.
+    // emptyOutDir is required because the target is outside the Vite root.
+    outDir: "../backend/public",
+    emptyOutDir: true,
+  },
 });

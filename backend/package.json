@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "drizzle-kit migrate && node dist/index.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.0.5",
+    "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.12.26",
     "pg": "^8.22.0",
@@ -20,7 +21,6 @@
   "devDependencies": {
     "@types/node": "^20.11.17",
     "@types/pg": "^8.20.0",
-    "drizzle-kit": "^0.31.10",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }

@@ -1,13 +1,11 @@
 {
   "name": "url-shortener",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "URL shortener — single-origin deploy (backend serves the built frontend).",
+  "private": true,
+  "packageManager": "pnpm@10.29.1",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.29.1"
+    "build": "pnpm -C frontend install --frozen-lockfile && pnpm -C frontend build && pnpm -C backend install --frozen-lockfile && pnpm -C backend build",
+    "start": "pnpm -C backend start"
+  }
 }
