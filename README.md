@@ -1,5 +1,11 @@
 # URL Shortener bit.ly - Kenny
 
+live on: https://short.ngkenny.dev/
+
+deployment instructions:
+- deploy frontend/backend/db on railway.app
+- check out .env.examples
+
 requirements:
 - shortens a url
 - looks up short url and redirect (301/302)
