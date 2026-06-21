@@ -18,8 +18,8 @@ POST `/api/url/` -> creates a new short url
 GET `/*/` -> redirect to long url if found
 
 decisions:
-- random url as sha256 -> generate a string, using their link as entropy. just slice
+- random base62 (alphanumerical) string generated
 - database to store the data -> postgresql & drizzle orm (most familiar)
-- cache? for redirect url yes -> just in memory map first, redis if we requirements need it
+- cache? for redirect url yes -> just in memory map first, redis if requirements need it
 - frontend -> react, shadcn, tailwind (most familiar)
-- backend and frontend deployed on? railway.app, frontend cloudflare workers?
+- backend and frontend deployed on? railway.app serve from single origin backend for now.
