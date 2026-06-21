@@ -4,12 +4,27 @@ import { cors } from "hono/cors";
 import z from "zod";
 import { urlRoute } from "./routes/url.js";
 import { getLongUrlFromShort } from "./lib/db.js";
+import { Cacher } from "./lib/cache.js";
 
 const corsOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:5173")
   .split(",")
   .map((o) => o.trim());
 
-export const app = new Hono();
+type MiddlewareEnv = {
+  Variables: {
+    cache: Cacher;
+  };
+};
+
+const urlCache = new Cacher();
+
+export const app = new Hono<MiddlewareEnv>();
+
+// injects cache into requests, premounted
+app.use("*", async (c, next) => {
+  c.set("cache", urlCache);
+  await next();
+});
 
 app.use("/api/*", cors({ origin: corsOrigins }));
 
@@ -27,16 +42,26 @@ app.get("/:shortSlug", async (c, next) => {
     return;
   }
 
-  const longUrl = await getLongUrlFromShort(parseShortSlug.data);
+  const shortSlug = parseShortSlug.data;
+  const cache = c.get("cache");
+
+  const cachedLongUrl = cache.get(shortSlug);
+
+  // if we ever add expiry or deletion. its important to invalidate cache
+  if (cachedLongUrl) {
+    return c.redirect(cachedLongUrl);
+  }
+
+  const longUrl = await getLongUrlFromShort(shortSlug);
+
   if (!longUrl) {
     await next();
     return;
   }
 
+  cache.set(shortSlug, longUrl);
+
   return c.redirect(longUrl);
 });
 
-// Serve the built frontend (Vite output) for everything else: the SPA at "/",
-// hashed bundles under "/assets", favicon, etc. Registered last so API routes
-// and slug redirects take precedence.
 app.use("/*", serveStatic({ root: "./public" }));
