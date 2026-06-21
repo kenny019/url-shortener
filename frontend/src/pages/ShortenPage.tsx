@@ -11,7 +11,7 @@ interface Result {
   longUrl: string;
 }
 
-/** Prepend https:// when the user omits a scheme, so "example.com" just works. */
+// adds https to the url if user just enters example.com
 function normalizeUrl(value: string): string {
   const trimmed = value.trim();
   if (!trimmed) return trimmed;

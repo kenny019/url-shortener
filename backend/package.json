@@ -5,7 +5,6 @@
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc",
     "start": "drizzle-kit migrate && node dist/index.js",
-    "test": "vitest run",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
@@ -23,7 +22,6 @@
     "@types/node": "^20.11.17",
     "@types/pg": "^8.20.0",
     "tsx": "^4.7.1",
-    "typescript": "^5.8.3",
-    "vitest": "^4.1.9"
+    "typescript": "^5.8.3"
   }
 }
