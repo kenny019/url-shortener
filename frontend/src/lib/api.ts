@@ -9,11 +9,14 @@ export interface ShortenResult {
   shortUrl: string;
 }
 
-export async function shortenUrl(longUrl: string): Promise<ShortenResult> {
+export async function shortenUrl(
+  longUrl: string,
+  requestedSlug?: string,
+): Promise<ShortenResult> {
   const res = await fetch(`${API_URL}/api/url`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ longUrl }),
+    body: JSON.stringify({ longUrl, requestedSlug }),
   });
 
   if (!res.ok) {
@@ -26,6 +29,7 @@ export async function shortenUrl(longUrl: string): Promise<ShortenResult> {
   const data = (await res.json()) as { slug: string; shortUrl?: string };
 
   const base = API_URL || window.location.origin;
+
   return {
     slug: data.slug,
     shortUrl: data.shortUrl ?? `${base}/${data.slug}`,

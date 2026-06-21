@@ -20,6 +20,7 @@ function normalizeUrl(value: string): string {
 
 export function ShortenPage() {
   const [url, setUrl] = useState("");
+  const [customSlug, setCustomSlug] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const [copied, setCopied] = useState(false);
@@ -35,7 +36,7 @@ export function ShortenPage() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await shortenUrl(longUrl);
+      const res = await shortenUrl(longUrl, customSlug.trim() || undefined);
       setResult({ shortUrl: res.shortUrl, longUrl });
       setCopied(false);
     } catch (err) {
@@ -56,6 +57,7 @@ export function ShortenPage() {
   function handleReset() {
     setResult(null);
     setUrl("");
+    setCustomSlug("");
   }
 
   return (
@@ -84,24 +86,40 @@ export function ShortenPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-card focus-within:border-ring focus-within:ring-ring/50 flex flex-col gap-2 rounded-2xl border p-2 shadow-sm transition-[color,box-shadow] focus-within:ring-[3px] sm:flex-row"
+          className="bg-card focus-within:border-ring focus-within:ring-ring/50 rounded-2xl border p-2 shadow-sm transition-[color,box-shadow] focus-within:ring-[3px]"
         >
-          <Input
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://example.com/very/long/link"
-            aria-label="URL to shorten"
-            autoFocus
-            className="h-12 border-0 bg-transparent text-base shadow-none focus-visible:ring-0"
-          />
-          <Button
-            type="submit"
-            size="lg"
-            disabled={loading}
-            className="h-12 px-6"
-          >
-            {loading ? <Loader2 className="size-4 animate-spin" /> : "Shorten"}
-          </Button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://example.com/very/long/link"
+              aria-label="URL to shorten"
+              autoFocus
+              className="h-12 border-0 bg-transparent text-base shadow-none focus-visible:ring-0"
+            />
+            <Button
+              type="submit"
+              size="lg"
+              disabled={loading}
+              className="h-12 px-6"
+            >
+              {loading ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                "Shorten"
+              )}
+            </Button>
+          </div>
+          <div className="mt-1 border-t pt-2">
+            <Input
+              value={customSlug}
+              onChange={(e) => setCustomSlug(e.target.value)}
+              placeholder="Custom short url (optional)"
+              aria-label="Custom short url (optional)"
+              maxLength={10}
+              className="h-10 border-0 bg-transparent text-sm shadow-none focus-visible:ring-0"
+            />
+          </div>
         </form>
 
         {result && (
