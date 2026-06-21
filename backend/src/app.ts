@@ -29,7 +29,7 @@ app.use("*", async (c, next) => {
 app.use("/api/*", cors({ origin: corsOrigins }));
 
 // Registered before "/:shortSlug" so it isn't treated as a 7-char slug lookup.
-app.get("/healthz", (c) => c.text("ok"));
+app.get("/health", (c) => c.text("ok"));
 
 app.route("/api/url", urlRoute);
 
