@@ -1,0 +1,44 @@
+name: Canary
+
+# Runs after every push to main (Railway auto-deploys on the same trigger).
+# Also runnable on demand from the Actions tab.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# If another push lands while a canary is in flight, drop the older run —
+# only the latest commit's deploy is interesting.
+concurrency:
+  group: canary-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the pnpm version from the root package.json's packageManager field.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Install backend deps
+        run: pnpm -C backend install --frozen-lockfile
+
+      - name: Wait for Railway deploy to finish
+        # Railway's deploy for this app takes roughly 90-150s. A fixed sleep is
+        # brittle but pragmatic. A production setup would expose a /version
+        # endpoint and poll until the returned SHA matches GITHUB_SHA.
+        run: sleep 120
+
+      - name: Run canary
+        env:
+          CANARY_BASE_URL: https://short.ngkenny.dev
+        run: pnpm -C backend canary
